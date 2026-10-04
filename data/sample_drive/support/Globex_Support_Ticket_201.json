@@ -1,0 +1,8 @@
+{
+  "ticket_id": "TICK-201",
+  "customer_name": "Globex Corporation",
+  "issue_type": "Billing Dispute",
+  "disputed_amount": 350.0,
+  "status": "open",
+  "description": "Customer was double charged $350 for expedited freight service on invoice INV-772."
+}

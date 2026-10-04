@@ -1,0 +1,4 @@
+Vendor: Acme Widgets Ltd
+Invoice: AW-101
+Total: $1,200.00
+Due Date: 2024-11-01

@@ -1,0 +1,4 @@
+Vendor: Acme Logistics Inc
+Invoice: AL-302
+Total: $3,150.00
+Due Date: 2024-11-05
