@@ -8,14 +8,10 @@ An end-to-end prototype of an **Autonomous AI Task Worker** designed to take nat
 
 https://github.com/user-attachments/assets/218578f5-670f-4958-b8f2-bfe11514dde8
 
-> 🎥 **Playable In-Readme Video**: The video above plays directly inside this README with full controls (play/pause, seekbar, and full-screen). A local copy is also archived in the repository at [`assets/demo.mp4`](assets/demo.mp4).
-> 
-> *The video demonstrates Autonoma receiving the unscripted instruction: `"Find the latest invoice from Acme Corp, extract the amount and due date, enter it into our internal system, and tell me once it is done."` It autonomously explores local files, extracts invoice fields from binary PDF documents, clears safety guardrails, submits the record via web browser, independently verifies the SQLite ledger, and generates a tamper-evident cryptographic receipt.*
-
 ---
 
 ## Table of Contents
-1. [Live Prototype Demo Video](#-live-prototype-demo-video)
+1. [Live Prototype Video Walkthrough](#-live-prototype-video-walkthrough)
 2. [Executive Overview](#executive-overview)
 3. [Core Architecture](#core-architecture)
 4. [Key Capabilities & Design Decisions](#key-capabilities--design-decisions)
