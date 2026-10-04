@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Autonoma | Autonomous AI Task Worker Live Demo</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body class="bg-slate-950 text-slate-100 min-h-screen flex flex-col font-sans">
+    <!-- Top Navigation -->
+    <header class="bg-slate-900 border-b border-slate-800 px-6 py-3 flex items-center justify-between sticky top-0 z-50 shadow-md">
+        <div class="flex items-center space-x-3">
+            <div class="w-9 h-9 rounded-lg bg-gradient-to-tr from-cyan-500 to-indigo-600 flex items-center justify-center shadow-lg shadow-cyan-500/20">
+                <i class="fa-solid fa-robot text-white text-lg"></i>
+            </div>
+            <div>
+                <span class="text-lg font-black tracking-wide bg-gradient-to-r from-cyan-400 via-indigo-300 to-purple-400 bg-clip-text text-transparent">AUTONOMA</span>
+                <span class="text-xs text-slate-400 block -mt-1 font-medium">Autonomous Enterprise Task Worker</span>
+            </div>
+        </div>
+
+        <div class="flex items-center space-x-4">
+            <a href="http://127.0.0.1:8000/erp" target="_blank" class="flex items-center space-x-2 text-xs bg-slate-800/80 hover:bg-slate-700 hover:text-white px-3 py-1.5 rounded-full border border-slate-700 transition" title="Open Company ERP Portal in new tab">
+                <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+                <span class="text-slate-300 font-mono">ERP Portal: <strong class="text-emerald-400">:8000 ↗</strong></span>
+            </a>
+
+            <label class="flex items-center space-x-2 text-xs cursor-pointer bg-slate-800/80 px-3 py-1.5 rounded-full border border-slate-700 hover:border-slate-600">
+                <input type="checkbox" id="chaosToggle" class="rounded text-amber-500 focus:ring-0">
+                <span class="text-slate-300">Chaos Injection (503s)</span>
+            </label>
+
+            <button id="btnReset" class="text-xs bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white px-3 py-1.5 rounded-lg border border-slate-700 transition flex items-center space-x-1.5">
+                <i class="fa-solid fa-arrow-rotate-right"></i>
+                <span>Reset Data</span>
+            </button>
+        </div>
+    </header>
+
+    <!-- Split Screen Main Content -->
+    <main class="flex-1 grid grid-cols-1 lg:grid-cols-12 overflow-hidden">
+        
+        <!-- Left Column: Agent Control & ReAct Trace (7 cols) -->
+        <section class="lg:col-span-7 border-r border-slate-800 flex flex-col h-[calc(100vh-61px)] overflow-hidden bg-slate-900/50">
+            <!-- Scenario Selector & Input Box -->
+            <div class="p-5 border-b border-slate-800 bg-slate-900/90 space-y-4">
+                <div>
+                    <label class="text-xs font-semibold text-slate-400 uppercase tracking-wider block mb-2">Preset Test Scenarios (Click to load)</label>
+                    <div class="flex flex-wrap gap-2" id="scenarioPills">
+                        <!-- Loaded dynamically -->
+                    </div>
+                </div>
+
+                <div class="space-y-2">
+                    <div class="flex justify-between items-center">
+                        <label class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Natural Language Task Directive</label>
+                        <span class="text-xs text-indigo-400 font-mono" id="scenarioBadge">Scenario 1</span>
+                    </div>
+                    <div class="relative">
+                        <textarea id="taskInput" rows="2" class="w-full bg-slate-950 border border-slate-700 rounded-xl p-3 text-sm text-slate-100 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-transparent transition resize-none"></textarea>
+                    </div>
+                    <div class="flex justify-between items-center pt-1">
+                        <div class="flex items-center space-x-3 text-xs text-slate-400">
+                            <span class="flex items-center"><i class="fa-solid fa-check-double text-cyan-400 mr-1.5"></i> Self-Verifying</span>
+                            <span class="flex items-center"><i class="fa-solid fa-shield-halved text-emerald-400 mr-1.5"></i> Safety Gated</span>
+                            <span class="flex items-center"><i class="fa-solid fa-arrows-rotate text-purple-400 mr-1.5"></i> Auto-Retry</span>
+                        </div>
+                        <button id="btnRun" class="bg-gradient-to-r from-cyan-500 to-indigo-600 hover:from-cyan-400 hover:to-indigo-500 text-white font-semibold text-sm px-5 py-2.5 rounded-xl shadow-lg shadow-cyan-500/20 transition flex items-center space-x-2">
+                            <i class="fa-solid fa-play text-xs"></i>
+                            <span>Execute Task Autonomously</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Milestone Progress Checklist -->
+            <div id="planContainer" class="px-5 py-3 border-b border-slate-800 bg-slate-950/40 hidden">
+                <div class="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2 flex justify-between">
+                    <span>Dynamic Execution Plan</span>
+                    <span id="planStats" class="text-cyan-400 font-mono">0 / 5 Milestones</span>
+                </div>
+                <div class="flex space-x-2 overflow-x-auto pb-1" id="milestonesList">
+                    <!-- Dynamic milestones -->
+                </div>
+            </div>
+
+            <!-- Live ReAct Trace Stream -->
+            <div class="flex-1 overflow-y-auto p-5 space-y-4" id="traceContainer">
+                <div id="emptyState" class="h-full flex flex-col items-center justify-center text-center p-8 text-slate-500 space-y-3">
+                    <div class="w-16 h-16 rounded-2xl bg-slate-800/50 border border-slate-700 flex items-center justify-center text-2xl text-slate-400">
+                        <i class="fa-solid fa-microchip"></i>
+                    </div>
+                    <div class="max-w-md">
+                        <h3 class="text-slate-300 font-semibold text-base mb-1">Autonomous Worker Idle</h3>
+                        <p class="text-xs text-slate-400">Select a scenario above or enter a custom instruction, then click <strong class="text-cyan-400">Execute Task</strong> to watch the agent reason, act, observe, self-correct, and verify.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Proof of Completion Card -->
+            <div id="certificateCard" class="p-5 border-t border-slate-800 bg-slate-950 hidden">
+                <!-- Injected dynamically -->
+            </div>
+        </section>
+
+        <!-- Right Column: Live Enterprise ERP Portal (5 cols) -->
+        <section class="lg:col-span-5 flex flex-col h-[calc(100vh-61px)] overflow-hidden bg-slate-950">
+            <!-- Tabs -->
+            <div class="bg-slate-900 border-b border-slate-800 px-4 py-2.5 flex items-center justify-between">
+                <div class="flex space-x-1" id="erpTabs">
+                    <button data-tab="invoices" class="tab-btn px-3 py-1.5 rounded-lg text-xs font-semibold bg-indigo-600 text-white">
+                        <i class="fa-solid fa-file-invoice-dollar mr-1.5"></i> ERP Invoices (<span id="invoiceCount">0</span>)
+                    </button>
+                    <button data-tab="files" class="tab-btn px-3 py-1.5 rounded-lg text-xs font-semibold text-slate-400 hover:text-white hover:bg-slate-800">
+                        <i class="fa-solid fa-folder-open mr-1.5"></i> Drive Files
+                    </button>
+                    <button data-tab="audit" class="tab-btn px-3 py-1.5 rounded-lg text-xs font-semibold text-slate-400 hover:text-white hover:bg-slate-800">
+                        <i class="fa-solid fa-shield-virus mr-1.5"></i> Audit Trail
+                    </button>
+                    <button data-tab="support" class="tab-btn px-3 py-1.5 rounded-lg text-xs font-semibold text-slate-400 hover:text-white hover:bg-slate-800">
+                        <i class="fa-solid fa-headset mr-1.5"></i> Support Desk
+                    </button>
+                </div>
+                <button id="btnRefreshErp" class="text-slate-400 hover:text-slate-200 text-xs p-1.5 rounded hover:bg-slate-800 transition" title="Refresh ERP Database">
+                    <i class="fa-solid fa-rotate"></i>
+                </button>
+            </div>
+
+            <!-- Tab Content 1: Invoices Ledger -->
+            <div id="tabContent-invoices" class="flex-1 overflow-y-auto p-4 space-y-3">
+                <div class="flex justify-between items-center mb-2">
+                    <span class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Internal ERP Ledger (SQLite)</span>
+                    <span class="text-[10px] text-slate-500 font-mono">Live updates</span>
+                </div>
+                <div class="bg-slate-900 rounded-xl border border-slate-800 overflow-hidden shadow-sm">
+                    <table class="w-full text-left text-xs border-collapse">
+                        <thead class="bg-slate-800/60 text-slate-400 font-semibold border-b border-slate-800">
+                            <tr>
+                                <th class="p-2.5">ID</th>
+                                <th class="p-2.5">Invoice #</th>
+                                <th class="p-2.5">Vendor</th>
+                                <th class="p-2.5">Amount</th>
+                                <th class="p-2.5">Due Date</th>
+                                <th class="p-2.5">Status</th>
+                            </tr>
+                        </thead>
+                        <tbody id="invoicesTableBody">
+                            <!-- Rows loaded live -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Tab Content: Drive Files & PDFs -->
+            <div id="tabContent-files" class="flex-1 overflow-y-auto p-4 space-y-3 hidden">
+                <div class="flex justify-between items-center mb-1">
+                    <span class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Company Document Drive</span>
+                    <span class="text-[10px] text-cyan-400 font-mono">Click to open real PDF / file ↗</span>
+                </div>
+                <div id="driveFilesList" class="space-y-2">
+                    <!-- Loaded dynamically -->
+                </div>
+            </div>
+
+            <!-- Tab Content 2: Audit Trail -->
+            <div id="tabContent-audit" class="flex-1 overflow-y-auto p-4 space-y-2 hidden">
+                <span class="text-xs font-semibold text-slate-400 uppercase tracking-wider block mb-2">System Audit Trail</span>
+                <div id="auditList" class="space-y-2 text-xs font-mono">
+                    <!-- Logs loaded live -->
+                </div>
+            </div>
+
+            <!-- Tab Content 3: Support Desk -->
+            <div id="tabContent-support" class="flex-1 overflow-y-auto p-4 space-y-4 hidden">
+                <span class="text-xs font-semibold text-slate-400 uppercase tracking-wider block mb-2">Support Tickets & Customer Ledger</span>
+                <div id="supportTicketsList" class="space-y-2"></div>
+                <div class="mt-4">
+                    <h4 class="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">Customer Ledger</h4>
+                    <div id="supportLedgerList" class="space-y-2"></div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <script src="/static/app.js"></script>
+</body>
+</html>

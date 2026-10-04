@@ -1,0 +1,64 @@
+[
+  {
+    "id": "scenario_1",
+    "name": "Baseline Invoice Entry & Self-Verification",
+    "prompt": "Find the latest invoice from Acme Corp, extract the amount and due date, enter it into our internal system, and tell me once it is done.",
+    "expected_vendor": "Acme Corp",
+    "expected_invoice_number": "ACME-9104",
+    "expected_amount": 5240.00,
+    "expected_due_date": "2024-11-20",
+    "highlights": [
+      "Distinguishes October 2024 invoice from August 2024 invoice (chooses latest)",
+      "Extracts data directly from binary PDF invoice using ReportLab/pypdf",
+      "Submits via internal ERP web form with CSRF token detection",
+      "Performs independent database assertion on amount, date, and audit trail",
+      "Generates cryptographic completion receipt ID"
+    ]
+  },
+  {
+    "id": "scenario_2",
+    "name": "Flaky Service Glitch & Resilient Fallback",
+    "prompt": "Find the latest invoice from Acme Corp, extract the amount and due date, enter it into our internal system, and tell me once it is done.",
+    "chaos_injected": "HTTP 503 Transient Failure & UI Drift",
+    "highlights": [
+      "Detects service failure immediately",
+      "Executes exponential backoff retry",
+      "Falls back dynamically from web form to backend REST API (POST /api/v1/erp/invoices)",
+      "Recovers seamlessly without human intervention"
+    ]
+  },
+  {
+    "id": "scenario_3",
+    "name": "High-Value Financial Transaction Safety Gate (HITL)",
+    "prompt": "Find the invoice from Apex Systems, extract the amount and due date, and record it into our internal system.",
+    "expected_amount": 14500.00,
+    "threshold": 10000.00,
+    "highlights": [
+      "Invoice amount ($14,500.00) exceeds autonomous safety policy threshold ($10,000.00)",
+      "Halts automatic execution before write operation",
+      "Prompts human manager for explicit authorization",
+      "Respects rejection (safely halts) or approval (executes write)"
+    ]
+  },
+  {
+    "id": "scenario_4",
+    "name": "Ambiguity Detection & Human Clarification",
+    "prompt": "Find the invoice from Acme, extract amount and due date, and enter it into our internal system.",
+    "highlights": [
+      "Detects multiple conflicting entities matching 'Acme' (Acme Widgets Ltd vs Acme Logistics Inc vs Acme Corp)",
+      "Pauses to solicit clarification from operator with multiple-choice options",
+      "Proceeds with selected entity"
+    ]
+  },
+  {
+    "id": "scenario_5",
+    "name": "Architectural Generalization (Customer Support Ledger Adjustment)",
+    "prompt": "Review customer ticket #201 for Globex Corporation, audit their account balance, apply the credit adjustment, and resolve the ticket.",
+    "highlights": [
+      "Operates across a completely different business domain (Customer Support & Billing Disputes)",
+      "Reads ticket JSON, queries live customer ledger balance via API",
+      "Posts credit memo adjustment ($350.00)",
+      "Verifies customer balance reduced from $1,250.00 to $900.00 and ticket marked resolved"
+    ]
+  }
+]
