@@ -4,21 +4,32 @@ An end-to-end prototype of an **Autonomous AI Task Worker** designed to take nat
 
 ---
 
+## 🎬 Live Prototype Demo Video
+
+![Autonoma Autonomous Task Worker Demo](assets/demo.gif)
+
+> 📹 **High-Definition Video**: Download or view the full-resolution MP4 video directly at [assets/demo.mp4](assets/demo.mp4).
+> 
+> *The recording above demonstrates Autonoma receiving the unscripted instruction: `"Find the latest invoice from Acme Corp, extract the amount and due date, enter it into our internal system, and tell me once it is done."` It autonomously explores local files, extracts invoice fields from binary PDF documents, clears safety guardrails, submits the record via web browser, independently verifies the SQLite ledger, and generates a tamper-evident cryptographic receipt.*
+
+---
+
 ## Table of Contents
-1. [Executive Overview](#executive-overview)
-2. [Core Architecture](#core-architecture)
-3. [Key Capabilities & Design Decisions](#key-capabilities--design-decisions)
-4. [Live Prototype & Demo Walkthrough](#live-prototype--demo-walkthrough)
-5. [Setup & Run Instructions](#setup--run-instructions)
-6. [Supported Scenarios](#supported-scenarios)
-7. [Verification & Cryptographic Proof-of-Work](#verification--cryptographic-proof-of-work)
-8. [Reliability & Error Recovery](#reliability--error-recovery)
-9. [Human-in-the-Loop (HITL) Safety Guardrails](#human-in-the-loop-hitl-safety-guardrails)
-10. [Generalization Across Domains](#generalization-across-domains)
-11. [Known Limitations](#known-limitations)
-12. [What to Build Next](#what-to-build-next)
-13. [Assumptions Made](#assumptions-made)
-14. [Tech Stack, Models & Dependencies](#tech-stack-models--dependencies)
+1. [Live Prototype Demo Video](#-live-prototype-demo-video)
+2. [Executive Overview](#executive-overview)
+3. [Core Architecture](#core-architecture)
+4. [Key Capabilities & Design Decisions](#key-capabilities--design-decisions)
+5. [Live Prototype & Demo Walkthrough](#live-prototype--demo-walkthrough)
+6. [Setup & Run Instructions](#setup--run-instructions)
+7. [Supported Scenarios](#supported-scenarios)
+8. [Verification & Cryptographic Proof-of-Work](#verification--cryptographic-proof-of-work)
+9. [Reliability & Error Recovery](#reliability--error-recovery)
+10. [Human-in-the-Loop (HITL) Safety Guardrails](#human-in-the-loop-hitl-safety-guardrails)
+11. [Generalization Across Domains](#generalization-across-domains)
+12. [Known Limitations](#known-limitations)
+13. [What to Build Next](#what-to-build-next)
+14. [Assumptions Made](#assumptions-made)
+15. [Tech Stack, Models & Dependencies](#tech-stack-models--dependencies)
 
 ---
 
@@ -146,12 +157,22 @@ Autonoma is architected as a modular, decoupled state machine executing a **ReAc
 
 ## Live Prototype & Demo Walkthrough
 
-Autonoma provides two interfaces:
+Autonoma provides two complementary interfaces:
 1. **Interactive Split-Screen Web Dashboard (`localhost:8080`)**:
-   - Left side: Autonomous AI Worker Console (Scenario selector, live reasoning stream, working memory inspector, HITL approval modal, verification certificate).
-   - Right side: Live Corporate ERP Portal (Invoices table, system audit log, customer support desk).
+   - **Left Panel (Worker Control Center)**: Dynamic goal decomposition checklist, live ReAct reasoning stream (Thought → Action → Observation → Reflection), interactive Human-in-the-Loop modals, and cryptographic completion certificates.
+   - **Right Panel (Simulated Enterprise ERP)**: Real-time multi-tab portal showing the live SQLite invoices ledger, native document drive with binary PDF preview, system audit log, and customer support desk.
 2. **Terminal Rich CLI**:
-   - Colorized ReAct step traces, tool call parameters, observations, and verification tables.
+   - Colorized ReAct step traces, tool parameters, observations, and structured verification tables.
+
+### 🎥 What the Demo Video Captures (Step-by-Step):
+1. **Goal Ingestion**: The worker receives the natural language task directive: `"Find the latest invoice from Acme Corp, extract the amount and due date, enter it into our internal system, and tell me once it is done."`
+2. **Autonomous Planning**: The goal decomposer constructs a 5-milestone checklist with inferred post-condition criteria.
+3. **Filesystem Exploration**: The worker calls `file_list_directory` and discovers two matching candidate files (`Acme_Corp_Invoice_2024_089.pdf` and `Acme_Corp_Invoice_2024_104.pdf`). It infers from filename/date that `104` is the latest invoice.
+4. **Binary PDF Field Extraction**: Using `file_extract_invoice_fields`, the worker extracts the invoice ID (`ACME-9104`), amount (`$5,240.00`), and due date (`2024-11-20`).
+5. **Safety Policy Clearance**: The worker evaluates the transaction against policy: `$5,240.00` is below the `$10,000.00` financial threshold, allowing automated execution without blocking the user.
+6. **Browser DOM Automation**: Navigating to `http://localhost:8000/erp/invoices/new`, the worker parses HTML form fields, captures hidden CSRF tokens, and submits the payload.
+7. **Independent Self-Verification**: The verifier directly inspects the underlying SQLite database, verifying record insertion and field integrity, then computes a SHA-256 cryptographic receipt (`PROOF-VERIFIED_SUCCESS-...`).
+8. **Live Synchronization**: The dashboard switches tabs to show the binary PDF in the Drive viewer and the new record appearing live in the ERP table and audit log.
 
 ---
 
