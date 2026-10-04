@@ -4,13 +4,20 @@ An end-to-end prototype of an **Autonomous AI Task Worker** designed to take nat
 
 ---
 
-## 🎬 Live Prototype Demo Video
+## 🎬 Live Prototype Video Walkthrough (MP4)
 
-![Autonoma Autonomous Task Worker Demo](assets/demo.gif)
+<p align="center">
+  <video src="https://github.com/M-A-SAIADITHYAA/Autonoma/raw/main/assets/demo.mp4" controls="controls" width="100%">
+    <source src="assets/demo.mp4" type="video/mp4">
+    Your browser does not support the video tag.
+  </video>
+</p>
 
-> 📹 **High-Definition Video**: Download or view the full-resolution MP4 video directly at [assets/demo.mp4](assets/demo.mp4).
+[![Watch Full HD Video Demo](assets/video_thumbnail.png)](https://github.com/M-A-SAIADITHYAA/Autonoma/blob/main/assets/demo.mp4)
+
+> 🎥 **[▶️ Click here to open and watch the full 1440p MP4 recording (`assets/demo.mp4`)](https://github.com/M-A-SAIADITHYAA/Autonoma/blob/main/assets/demo.mp4)**
 > 
-> *The recording above demonstrates Autonoma receiving the unscripted instruction: `"Find the latest invoice from Acme Corp, extract the amount and due date, enter it into our internal system, and tell me once it is done."` It autonomously explores local files, extracts invoice fields from binary PDF documents, clears safety guardrails, submits the record via web browser, independently verifies the SQLite ledger, and generates a tamper-evident cryptographic receipt.*
+> *The video above demonstrates Autonoma receiving the unscripted instruction: `"Find the latest invoice from Acme Corp, extract the amount and due date, enter it into our internal system, and tell me once it is done."` It autonomously explores local files, extracts invoice fields from binary PDF documents, clears safety guardrails, submits the record via web browser, independently verifies the SQLite ledger, and generates a tamper-evident cryptographic receipt.*
 
 ---
 
